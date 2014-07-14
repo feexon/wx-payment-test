@@ -1,0 +1,18 @@
+<!doctype html>
+<html>
+<head>
+    <script language="javascript">
+        function callpay() {
+            WeixinJSBridge.invoke('getBrandWCPayRequest', {
+                "appId": "$config.appId", "timeStamp": "$timestamp", "nonceStr": "$nonce", "package": "$packageValue", "signType": "SHA1", "paySign": "$sign"
+            }, function (res) {
+                WeixinJSBridge.log(res.err_msg);
+                alert(res.err_code + res.err_desc + res.err_msg);
+            });
+        }
+    </script>
+</head>
+<body>
+<button type="button" onclick="callpay()">wx pay test</button>
+</body>
+</html>

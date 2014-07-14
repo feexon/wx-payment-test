@@ -1,0 +1,48 @@
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'groovy'
+apply plugin: 'idea'
+
+
+sourceCompatibility = 1.5
+version = '1.0'
+configurations {
+    provided
+    dist
+    compile.extendsFrom dist
+}
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+
+    compile 'org.codehaus.groovy:groovy-all:2.2.1'
+    compile 'org.springframework:spring-webmvc:3.2.0.RELEASE'
+    compile 'org.springframework:spring-context-support:3.2.0.RELEASE'
+    compile 'org.apache.velocity:velocity:1.7'
+    dist fileTree(dir: 'libs', includes: ['**/*.jar'])
+
+    provided 'javax.servlet:servlet-api:2.5'
+}
+sourceSets {
+    main {
+        compileClasspath += configurations.provided
+    }
+}
+idea.module {
+    inheritOutputDirs = false
+    excludeDirs += [file('.idea'), file('gradle')]
+    downloadSources = false
+    outputDir = sourceSets.main.output.classesDir
+    testOutputDir = sourceSets.test.output.classesDir
+    scopes.PROVIDED.plus += configurations.provided
+}
+
+task warLightly(type: War) {
+    archiveName = 'shop.rar'
+    classpath = classpath.findAll { return !it.path.endsWith('.jar') }
+    classpath += configurations.dist
+
+}
